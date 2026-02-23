@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Briefing Estratégico | Frame Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f111a;
+            --panel-bg: #181b28;
+            --input-bg: #222638;
+            --text-light: #e2e8f0;
+            --text-muted: #94a3b8;
+            --primary-grad: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+            --primary-color: #00d2ff;
+            --error-color: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-image: radial-gradient(circle at top, rgba(0, 210, 255, 0.05) 0%, transparent 50%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--panel-bg);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header & Logo */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 28px;
+            letter-spacing: 4px;
+            background: var(--primary-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-sub {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            letter-spacing: 6px;
+            color: var(--text-light);
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background-color: var(--input-bg);
+            border-radius: 2px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 16.6%;
+            background: var(--primary-grad);
+            transition: width 0.4s ease;
+        }
+
+        /* Form Steps */
+        .step {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .step h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+            margin-bottom: 25px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step h2 span {
+            color: var(--primary-color);
+        }
+
+        /* Inputs */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="url"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--input-bg);
+            border: 1px solid transparent;
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input[type="text"]:focus,
+        input[type="url"]:focus,
+        textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Custom File Input */
+        .file-upload {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border: 2px dashed var(--input-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--primary-color);
+            background: rgba(0, 210, 255, 0.02);
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* Custom Radio Buttons */
+        .radio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+        }
+
+        .radio-label {
+            display: block;
+            position: relative;
+            padding: 15px;
+            background: var(--input-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .radio-label input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .radio-label span {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .radio-label input:checked ~ span {
+            color: var(--primary-color);
+        }
+
+        .radio-label input:checked ~ .radio-label,
+        .radio-label:has(input:checked) {
+            border-color: var(--primary-color);
+            background: rgba(0, 210, 255, 0.05);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.1);
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            gap: 15px;
+        }
+
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-prev {
+            background-color: var(--input-bg);
+            color: var(--text-light);
+        }
+
+        .btn-prev:hover {
+            background-color: #2c324a;
+        }
+
+        .btn-next, .btn-submit {
+            background: var(--primary-grad);
+            color: #fff;
+            flex-grow: 1;
+            max-width: 200px;
+        }
+
+        .btn-next:hover, .btn-submit:hover {
+            box-shadow: 0 5px 20px rgba(0, 210, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-submit {
+            display: none;
+        }
+
+        /* Thank you screen */
+        .thank-you {
+            display: none;
+            text-align: center;
+            padding: 40px 0;
+            animation: fadeIn 0.8s;
+        }
+
+        .thank-you h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 32px;
+            background: var(--primary-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .thank-you p {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .check-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            background: rgba(0, 210, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .check-icon svg {
+            width: 40px;
+            height: 40px;
+            stroke: var(--primary-color);
+            stroke-width: 3;
+            fill: none;
+        }
+
+        /* Loading */
+        .loader {
+            display: none;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary-color);
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 25px; }
+            .radio-grid { grid-template-columns: 1fr 1fr; }
+            .btn-group { flex-direction: column-reverse; }
+            .btn-next, .btn-submit, .btn-prev { max-width: 100%; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="mainContainer">
+    <div class="header" id="formHeader">
+        <div class="logo-container">
+            <!-- Simulação visual da logo -->
+            <div style="display: flex; position: relative; width: 45px; height: 35px;">
+                <div style="border: 4px solid #00d2ff; border-right: none; border-bottom: none; width: 30px; height: 25px; position: absolute; top:0; left:0;"></div>
+                <div style="border: 4px solid #3a7bd5; border-left: none; border-top: none; width: 30px; height: 25px; position: absolute; bottom:0; right:0;"></div>
+                <div style="width: 6px; height: 6px; background: #00d2ff; position: absolute; top: 14.5px; left: 19.5px;"></div>
+            </div>
+            <div class="logo-text">FRAME</div>
+            <div class="logo-sub">Studio</div>
+        </div>
+        <div class="subtitle">Diagnóstico e Briefing Estratégico</div>
+    </div>
+
+    <!-- Barra de progresso -->
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- IFRAME OCULTO: Recebe a resposta do servidor sem recarregar a página -->
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="iframeLoaded()"></iframe>
+
+    <!-- Formulário apontando para o Iframe -->
+    <form id="briefingForm" action="https://formsubmit.co/roned9999@gmail.com" method="POST" enctype="multipart/form-data" target="hidden_iframe">
+        
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_subject" value="Novo Briefing - Frame Studio com Anexos!">
+        <input type="hidden" name="_template" value="table">
+
+        <!-- ETAPA 1 -->
+        <div class="step active" id="step1">
+            <h2><span>🔹 1.</span> Informações Básicas</h2>
+            <div class="form-group">
+                <label>1. Nome da empresa</label>
+                <input type="text" name="1_Nome_da_Empresa" required placeholder="Sua resposta">
+            </div>
+            <div class="form-group">
+                <label>2. Cidade / Região de atendimento</label>
+                <input type="text" name="2_Cidade_Regiao" placeholder="Sua resposta">
+            </div>
+            <div class="form-group">
+                <label>3. WhatsApp principal para contato</label>
+                <input type="text" name="3_WhatsApp" required placeholder="(00) 00000-0000">
+            </div>
+            <div class="form-group">
+                <label>4. Instagram da empresa</label>
+                <input type="text" name="4_Instagram" placeholder="Sua resposta">
+            </div>
+            <div class="form-group">
+                <label>5. Possui site atual? Se sim, qual?</label>
+                <input type="text" name="5_Site_Atual" placeholder="Sua resposta">
+            </div>
+            <div class="form-group">
+                <label>6. Envie seu logotipo em boa qualidade</label>
+                <div class="file-upload">
+                    <input type="file" name="6_Logotipo" accept="image/*,.pdf,.ai,.eps">
+                    <span id="logoFileName">Clique para anexar arquivo ou arraste aqui</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>7. Envie fotos reais do seu espaço, equipe ou produto</label>
+                <div class="file-upload">
+                    <input type="file" name="7_Fotos" accept="image/*" multiple>
+                    <span id="fotosFileName">Clique para anexar arquivos</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ETAPA 2 -->
+        <div class="step" id="step2">
+            <h2><span>🔹 2.</span> Posicionamento e Identidade</h2>
+            <div class="form-group">
+                <label>8. Há quanto tempo sua empresa está no mercado?</label>
+                <input type="text" name="8_Tempo_de_Mercado" placeholder="Sua resposta">
+            </div>
+            <div class="form-group">
+                <label>9. Descreva sua empresa em uma frase</label>
+                <textarea name="9_Descricao_da_Empresa" placeholder="Sua resposta"></textarea>
+            </div>
+            <div class="form-group">
+                <label>10. Qual é o principal diferencial em relação aos concorrentes?</label>
+                <textarea name="10_Diferencial" placeholder="Sua resposta"></textarea>
+            </div>
+            <div class="form-group">
+                <label>11. Quais valores são importantes para sua marca?</label>
+                <textarea name="11_Valores" placeholder="Sua resposta"></textarea>
+            </div>
+            <div class="form-group">
+                <label>12. Qual imagem deseja transmitir?</label>
+                <div class="radio-grid">
+                    <label class="radio-label"><input type="radio" name="12_Imagem_Transmitida" value="Moderna"><span>Moderna</span></label>
+                    <label class="radio-label"><input type="radio" name="12_Imagem_Transmitida" value="Tradicional"><span>Tradicional</span></label>
+                    <label class="radio-label"><input type="radio" name="12_Imagem_Transmitida" value="Premium"><span>Premium</span></label>
+                    <label class="radio-label"><input type="radio" name="12_Imagem_Transmitida" value="Popular"><span>Popular</span></label>
+                    <label class="radio-label"><input type="radio" name="12_Imagem_Transmitida" value="Sofisticada"><span>Sofisticada</span></label>
+                    <label class="radio-label"><input type="radio" name="12_Imagem_Transmitida" value="Jovem"><span>Jovem</span></label>
+                </div>
+            </div>
+        </div>
+
+        <!-- ETAPA 3 -->
+        <div class="step" id="step3">
+            <h2><span>🔹 3.</span> Público-Alvo</h2>
+            <div class="form-group">
+                <label>13. Quem é seu cliente ideal? (idade, perfil, estilo de vida)</label>
+                <textarea name="13_Cliente_Ideal" placeholder="Sua resposta"></textarea>
+            </div>
+            <div class="form-group">
+                <label>14. Qual principal problema ele enfrenta antes de contratar você?</label>
+                <textarea name="14_Problema_do_Cliente" placeholder="Sua resposta"></textarea>
+            </div>
+            <div class="form-group">
+                <label>15. O que normalmente faz ele escolher você?</label>
+                <textarea name="15_Motivo_de_Escolha" placeholder="Sua resposta"></textarea>
+            </div>
+            <div class="form-group">
+                <label>16. Qual é a principal dúvida ou objeção antes de fechar negócio?</label>
+                <textarea name="16_Duvida_Objecao" placeholder="Sua resposta"></textarea>
+            </div>
+        </div>
+
+        <!-- ETAPA 4 -->
+        <div class="step" id="step4">
+            <h2><span>🔹 4.</span> Produto / Serviço</h2>
+            <div class="form-group">
+                <label>17. Qual produto ou serviço principal deseja destacar na página?</label>
+                <input type="text" name="17_Produto_Servico_Principal" placeholder="Sua resposta">
+            </div>
+            <div class="form-group">
+                <label>18. Existem serviços secundários que devem aparecer?</label>
+                <textarea name="18_Servicos_Secundarios" placeholder="Sua resposta"></textarea>
+            </div>
+            <div class="form-group">
+                <label>19. Existe alguma promoção ou condição especial atualmente?</label>
+                <textarea name="19_Promocao_Especial" placeholder="Sua resposta"></textarea>
+            </div>
+            <div class="form-group">
+                <label>20. Qual ação o cliente deve realizar na página?</label>
+                <div class="radio-grid">
+                    <label class="radio-label"><input type="radio" name="20_Acao_na_Pagina" value="Chamar no WhatsApp"><span>Chamar no WhatsApp</span></label>
+                    <label class="radio-label"><input type="radio" name="20_Acao_na_Pagina" value="Agendar"><span>Agendar</span></label>
+                    <label class="radio-label"><input type="radio" name="20_Acao_na_Pagina" value="Comprar"><span>Comprar</span></label>
+                    <label class="radio-label"><input type="radio" name="20_Acao_na_Pagina" value="Solicitar orçamento"><span>Solicitar orçamento</span></label>
+                </div>
+            </div>
+        </div>
+
+        <!-- ETAPA 5 -->
+        <div class="step" id="step5">
+            <h2><span>🔹 5.</span> Autoridade</h2>
+            <div class="form-group">
+                <label>21. Possui depoimentos de clientes?</label>
+                <div class="radio-grid" style="grid-template-columns: 1fr 1fr;">
+                    <label class="radio-label"><input type="radio" name="21_Depoimentos" value="Sim (enviarei)"><span>Sim (enviarei)</span></label>
+                    <label class="radio-label"><input type="radio" name="21_Depoimentos" value="Não"><span>Não</span></label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>22. Possui números relevantes? (anos de mercado, clientes atendidos, etc.)</label>
+                <textarea name="22_Numeros_Relevantes" placeholder="Sua resposta"></textarea>
+            </div>
+            <div class="form-group">
+                <label>23. Possui certificações, parcerias ou diferenciais técnicos?</label>
+                <textarea name="23_Certificacoes_Parcerias" placeholder="Sua resposta"></textarea>
+            </div>
+        </div>
+
+        <!-- ETAPA 6 -->
+        <div class="step" id="step6">
+            <h2><span>🔹 6.</span> Objetivo da Página</h2>
+            <div class="form-group">
+                <label>24. Qual é o principal objetivo da página?</label>
+                <div class="radio-grid" style="grid-template-columns: 1fr 1fr;">
+                    <label class="radio-label"><input type="radio" name="24_Objetivo_da_Pagina" value="Gerar mais contatos"><span>Gerar mais contatos</span></label>
+                    <label class="radio-label"><input type="radio" name="24_Objetivo_da_Pagina" value="Aumentar vendas"><span>Aumentar vendas</span></label>
+                    <label class="radio-label"><input type="radio" name="24_Objetivo_da_Pagina" value="Fortalecer marca"><span>Fortalecer marca</span></label>
+                    <label class="radio-label"><input type="radio" name="24_Objetivo_da_Pagina" value="Lançar um novo serviço"><span>Lançar um novo serviço</span></label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>25. Qual resultado você espera atingir nos próximos 3 meses?</label>
+                <textarea name="25_Resultado_Esperado" placeholder="Sua resposta"></textarea>
+            </div>
+        </div>
+
+        <!-- Controles de Navegação -->
+        <div class="btn-group" id="btnGroup">
+            <button type="button" class="btn-prev" id="prevBtn" style="display: none;" onclick="nextPrev(-1)">Voltar</button>
+            <button type="button" class="btn-next" id="nextBtn" onclick="nextPrev(1)">Próximo Passo</button>
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <span id="btnText">Enviar Briefing</span>
+                <div class="loader" id="loader"></div>
+            </button>
+        </div>
+    </form>
+
+    <!-- Tela de Agradecimento (Oculta por padrão) -->
+    <div class="thank-you" id="thankYouScreen">
+        <div class="check-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <h2>Briefing Recebido!</h2>
+        <p>Agradecemos por compartilhar essas informações valiosas.<br>A equipe da <strong>Frame Studio</strong> fará a análise estratégica do seu negócio e entrará em contato em breve para os próximos passos da sua Landing Page.</p>
+    </div>
+
+</div>
+
+<script>
+    let currentStep = 0;
+    const steps = document.querySelectorAll(".step");
+    let formSubmitted = false;
+    
+    showStep(currentStep);
+
+    function showStep(n) {
+        steps[n].classList.add("active");
+        
+        // Atualizar barra de progresso (6 passos = 16.6% cada)
+        const progress = ((n + 1) / steps.length) * 100;
+        document.getElementById("progressBar").style.width = progress + "%";
+
+        // Mostrar/ocultar botões
+        if (n == 0) {
+            document.getElementById("prevBtn").style.display = "none";
+        } else {
+            document.getElementById("prevBtn").style.display = "block";
+        }
+
+        if (n == (steps.length - 1)) {
+            document.getElementById("nextBtn").style.display = "none";
+            document.getElementById("submitBtn").style.display = "block";
+        } else {
+            document.getElementById("nextBtn").style.display = "block";
+            document.getElementById("submitBtn").style.display = "none";
+        }
+    }
+
+    function nextPrev(n) {
+        // Validação básica (opcional, pode expandir se quiser obrigar campos preenchidos)
+        steps[currentStep].classList.remove("active");
+        currentStep = currentStep + n;
+        showStep(currentStep);
+    }
+
+    // Lidar com nomes de arquivos nos inputs de upload
+    const fileInputs = [
+        { name: '6_Logotipo', span: 'logoFileName' },
+        { name: '7_Fotos', span: 'fotosFileName' }
+    ];
+
+    fileInputs.forEach(input => {
+        const el = document.querySelector(`input[name="${input.name}"]`);
+        const span = document.getElementById(input.span);
+        if(el && span) {
+            el.addEventListener('change', function(e) {
+                if(e.target.files.length > 0) {
+                    span.innerText = e.target.files.length === 1 
+                        ? e.target.files[0].name 
+                        : e.target.files.length + " arquivos selecionados";
+                    span.style.color = 'var(--primary-color)';
+                } else {
+                    span.innerText = "Clique para anexar arquivos";
+                    span.style.color = 'var(--text-muted)';
+                }
+            });
+        }
+    });
+
+    // Função que dispara quando o cliente clica em "Enviar Briefing"
+    const form = document.getElementById('briefingForm');
+    form.addEventListener('submit', function() {
+        formSubmitted = true;
+        document.getElementById('btnText').style.display = 'none';
+        document.getElementById('loader').style.display = 'block';
+        document.getElementById('submitBtn').disabled = true;
+        // O formulário seguirá seu caminho nativo para o "hidden_iframe"
+    });
+
+    // Função que dispara quando o iframe oculto termina de carregar a resposta
+    function iframeLoaded() {
+        if (formSubmitted) {
+            // Se o formulário foi enviado e o iframe carregou, mostramos o sucesso
+            form.style.display = 'none';
+            document.getElementById('progressContainer').style.display = 'none';
+            document.getElementById('formHeader').style.display = 'none';
+            document.getElementById('thankYouScreen').style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>
