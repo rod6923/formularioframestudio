@@ -150,6 +150,13 @@
             font-weight: 500;
         }
 
+        .hint-text {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 8px;
+            display: block;
+        }
+
         input[type="text"],
         input[type="url"],
         textarea,
@@ -421,9 +428,11 @@
             </div>
             <div class="form-group">
                 <label>7. Envie fotos reais do seu espaço, equipe ou produto</label>
+                <span class="hint-text">(Dica: Segure o botão Ctrl ou Shift no teclado para selecionar várias fotos de uma vez)</span>
                 <div class="file-upload">
+                    <!-- O atributo MULTIPLE é o que permite enviar várias fotos na mesma pergunta -->
                     <input type="file" name="7_Fotos" accept="image/*" multiple>
-                    <span id="fotosFileName">Clique para anexar arquivos</span>
+                    <span id="fotosFileName">Clique para anexar um ou mais arquivos</span>
                 </div>
             </div>
         </div>
@@ -512,9 +521,11 @@
             <h2><span>🔹 5.</span> Autoridade</h2>
             <div class="form-group">
                 <label>21. Possui depoimentos de clientes?</label>
-                <div class="radio-grid" style="grid-template-columns: 1fr 1fr;">
-                    <label class="radio-label"><input type="radio" name="21_Depoimentos" value="Sim (enviarei)"><span>Sim (enviarei)</span></label>
-                    <label class="radio-label"><input type="radio" name="21_Depoimentos" value="Não"><span>Não</span></label>
+                <span class="hint-text">(Dica: Você pode anexar vários prints, fotos ou vídeos de uma vez)</span>
+                <div class="file-upload">
+                    <!-- O atributo MULTIPLE ativado aqui também -->
+                    <input type="file" name="21_Depoimentos" multiple>
+                    <span id="depoimentosFileName">Clique para anexar depoimentos</span>
                 </div>
             </div>
             <div class="form-group">
@@ -600,7 +611,6 @@
     }
 
     function nextPrev(n) {
-        // Validação básica (opcional, pode expandir se quiser obrigar campos preenchidos)
         steps[currentStep].classList.remove("active");
         currentStep = currentStep + n;
         showStep(currentStep);
@@ -609,7 +619,8 @@
     // Lidar com nomes de arquivos nos inputs de upload
     const fileInputs = [
         { name: '6_Logotipo', span: 'logoFileName' },
-        { name: '7_Fotos', span: 'fotosFileName' }
+        { name: '7_Fotos', span: 'fotosFileName' },
+        { name: '21_Depoimentos', span: 'depoimentosFileName' } // Adicionado para a Q21
     ];
 
     fileInputs.forEach(input => {
